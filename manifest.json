@@ -2,10 +2,10 @@
   "manifest_version": 3,
   "name": "ThoughtLogger — Quick Capture",
   "short_name": "ThoughtLogger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Capture notes, pages, selections, YouTube links, and visible screenshots in ThoughtLogger.",
   "homepage_url": "https://thoughtlogger.com/extension",
-  "minimum_chrome_version": "110",
+  "minimum_chrome_version": "113",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",

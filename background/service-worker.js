@@ -11,6 +11,7 @@ const ACCOUNT_KEY = "connection.account";
 const CONFIG_KEY = "connection.config";
 const FEEDBACK_KEY = "last.feedback";
 let flushPromise = null;
+let connectionPromise = null;
 
 const menuItems = [
   { id: "thoughtlogger-save-page", title: "Save this page", contexts: ["page"] },
@@ -43,6 +44,25 @@ async function fetchConnection() {
   const account = config.account;
   await chrome.storage.local.set({ [ACCOUNT_KEY]: account, [CONFIG_KEY]: config });
   return { account, config };
+}
+
+async function establishConnection(interactive) {
+  if (connectionPromise) return connectionPromise;
+  connectionPromise = (async () => {
+    const existing = await getTokens();
+    if (!existing?.accessToken) await connect({ interactive });
+    try {
+      const connection = await fetchConnection();
+      await flushOutbox();
+      return { ...(await state()), ...connection };
+    } catch (error) {
+      // A token that cannot identify an account is not a usable connection.
+      // Keep this symmetric for manual and silent OAuth attempts.
+      await clearTokens();
+      throw error;
+    }
+  })().finally(() => { connectionPromise = null; });
+  return connectionPromise;
 }
 
 async function activeTab() {
@@ -212,13 +232,16 @@ async function state() {
 async function onMessage(message) {
   switch (message?.type) {
     case "GET_STATE": return { ok: true, state: await state() };
-    case "CONNECT": {
-      await connect();
+    case "CONNECT": return { ok: true, state: await establishConnection(true) };
+    case "CONNECT_SILENT": {
+      const current = await state();
+      if (current.connected) return { ok: true, state: current };
       try {
-        const connection = await fetchConnection(); await flushOutbox();
-        return { ok: true, state: { ...(await state()), ...connection } };
-      } catch (error) {
-        await clearTokens(); throw error;
+        return { ok: true, state: await establishConnection(false) };
+      } catch {
+        // No site session (or one that cannot be reused) is the normal first-
+        // install result. Leave the explicit Connect action as the fallback.
+        return { ok: true, state: await state(), silentMiss: true };
       }
     }
     case "REFRESH_CONNECTION": return { ok: true, state: { ...(await state()), ...(await fetchConnection()) } };

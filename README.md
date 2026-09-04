@@ -6,16 +6,20 @@ A permission-minimal Manifest V3 extension for deliberate, low-friction capture 
 
 1. In Supabase OAuth Server, create a **public** client using Authorization Code + PKCE and `token_endpoint_auth_method=none`. Do not create or embed a client secret.
 2. Load the unpacked source once at `chrome://extensions` to learn its development ID. Register the exact callback shown by `chrome.identity.getRedirectURL("oauth2")`, which has the form `https://<extension-id>.chromiumapp.org/oauth2`.
-3. Build with the public client ID:
+3. The tracked development build already contains the public client ID for the
+   pinned unpacked-extension callback. To build for another extension ID, supply
+   that extension's public client ID:
 
    ```sh
    npm install
    THOUGHTLOGGER_OAUTH_CLIENT_ID=your-public-client-id npm run build
    ```
 
-4. Load `dist/` as an unpacked extension. Connect only by clicking the welcome-page or popup button.
+4. Load `dist/` as an unpacked extension. The welcome page silently checks for
+   an existing ThoughtLogger website session. It connects automatically when
+   one is available; otherwise the user can choose **Connect ThoughtLogger**.
 
-Use separate development and production OAuth clients. Once the Chrome Web Store creates the production extension ID, register that extension’s exact callback and pin the production ID through the store/public-key workflow. The tracked config contains only a placeholder and never a secret.
+Use separate development and production OAuth clients. Once the Chrome Web Store creates the production extension ID, register that extension’s exact callback, add its exact client/callback pair to ThoughtLogger's first-party allowlist, and pin the production ID through the store/public-key workflow. OAuth client IDs are public identifiers; the extension never contains a client secret.
 
 ## Commands
 
@@ -27,6 +31,9 @@ Use separate development and production OAuth clients. Once the Chrome Web Store
 ## Architecture and privacy boundary
 
 - The service worker is the only code that receives OAuth tokens or calls the ThoughtLogger API.
+- The welcome screen may attempt non-interactive OAuth. ThoughtLogger connects
+  automatically only when its same-origin website session is already valid and
+  the exact first-party OAuth client and Chrome callback both match.
 - Tokens use extension-local storage restricted to trusted extension contexts. Drafts and queued captures use IndexedDB.
 - Every capture is persisted before upload. Its client UUID becomes the server entry UUID, so retries are idempotent.
 - Queue records carry the connected ThoughtLogger user ID. A record is never sent while another account is active.

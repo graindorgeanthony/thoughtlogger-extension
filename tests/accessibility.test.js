@@ -26,3 +26,23 @@ describe("popup accessibility", () => {
     expect(css).toMatch(/\[hidden\]\{display:none!important\}/);
   });
 });
+
+describe("welcome accessibility", () => {
+  const html = readFileSync(resolve(process.cwd(), "welcome/welcome.html"), "utf8");
+  const css = readFileSync(resolve(process.cwd(), "welcome/welcome.css"), "utf8");
+  beforeEach(() => { document.documentElement.innerHTML = html; });
+
+  it("labels its permission explanation and announces connection feedback", () => {
+    expect(document.querySelector(".permissions")?.getAttribute("aria-labelledby")).toBe("permission-title");
+    expect(document.querySelector("#status")?.getAttribute("role")).toBe("status");
+    expect(document.querySelector("#status")?.getAttribute("aria-live")).toBe("polite");
+    expect(document.querySelector("#connect")?.getAttribute("aria-describedby")).toBe("status");
+  });
+
+  it("fits a desktop viewport without disabling accessible reflow", () => {
+    expect(css).toMatch(/min-height:100dvh/);
+    expect(css).toMatch(/min-height:48px/);
+    expect(css).toMatch(/@media\(max-width:840px\)/);
+    expect(css).not.toMatch(/overflow:\s*hidden/);
+  });
+});

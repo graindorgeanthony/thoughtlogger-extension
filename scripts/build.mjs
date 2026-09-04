@@ -7,7 +7,7 @@ import archiver from "archiver";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const release = join(root, "release");
-const clientId = process.env.THOUGHTLOGGER_OAUTH_CLIENT_ID || "__THOUGHTLOGGER_OAUTH_CLIENT_ID__";
+const clientId = process.env.THOUGHTLOGGER_OAUTH_CLIENT_ID?.trim() || null;
 const include = ["manifest.json", "config.js", "background", "content", "lib", "popup", "welcome", "icons", "fonts"];
 
 await rm(dist, { recursive: true, force: true });
@@ -18,7 +18,10 @@ for (const item of include) {
   await cp(source, join(dist, item), { recursive: true });
 }
 const configPath = join(dist, "config.js");
-const config = (await readFile(configPath, "utf8")).replace("__THOUGHTLOGGER_OAUTH_CLIENT_ID__", clientId);
+const sourceConfig = await readFile(configPath, "utf8");
+const config = clientId
+  ? sourceConfig.replace(/oauthClientId:\s*"[^"]+"/, `oauthClientId: "${clientId}"`)
+  : sourceConfig;
 await writeFile(configPath, config);
 
 async function walk(directory) {
@@ -36,7 +39,7 @@ for (const file of await walk(dist)) {
     throw new Error(`Remote or dynamic executable code found in ${relative(root, file)}`);
   }
 }
-console.log(`Built ${relative(root, dist)}${clientId.includes("__THOUGHTLOGGER") ? " (OAuth client ID not configured)" : ""}.`);
+console.log(`Built ${relative(root, dist)}${clientId ? " with the supplied production OAuth client ID" : " with the development OAuth client ID"}.`);
 
 if (process.argv.includes("--zip")) {
   await rm(release, { recursive: true, force: true }); await mkdir(release, { recursive: true });

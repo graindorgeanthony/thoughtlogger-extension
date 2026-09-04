@@ -35,13 +35,14 @@ The extension handles authentication information and user-generated content. Dep
 ## Reviewer instructions
 
 1. Use the supplied review account or create a ThoughtLogger account.
-2. Click the toolbar icon. Confirm OAuth does not open until **Connect ThoughtLogger** is clicked.
-3. Log a plain note with Auto selected; confirm the success message and journal entry.
-4. Right-click an HTTP(S) page and test Save page and Save selected text.
-5. Choose Save visible screenshot; confirm only the viewport is present and the confirmation card offers Undo/Open.
-6. Use **Write a quick note here** or Cmd/Ctrl+Shift+L. Verify Escape closes it and focus returns to the prior element.
-7. Disable networking, submit a note, and confirm pending badge/outbox feedback. Restore networking and choose Retry or wait for the alarm.
-8. Visit `chrome://settings`, open the popup, and confirm page/screenshot controls are disabled with a clear explanation.
-9. Disconnect. If the outbox is non-empty, verify the confirmation appears before account data is cleared.
+2. Open the welcome screen while signed into ThoughtLogger in the same Chrome profile. Confirm it connects without opening an OAuth window.
+3. When signed out, confirm the silent check ends quietly, then click **Connect ThoughtLogger** and verify the visible sign-in fallback.
+4. Log a plain note with Auto selected; confirm the success message and journal entry.
+5. Right-click an HTTP(S) page and test Save page and Save selected text.
+6. Choose Save visible screenshot; confirm only the viewport is present and the confirmation card offers Undo/Open.
+7. Use **Write a quick note here** or Cmd/Ctrl+Shift+L. Verify Escape closes it and focus returns to the prior element.
+8. Disable networking, submit a note, and confirm pending badge/outbox feedback. Restore networking and choose Retry or wait for the alarm.
+9. Visit `chrome://settings`, open the popup, and confirm page/screenshot controls are disabled with a clear explanation.
+10. Disconnect. If the outbox is non-empty, verify the confirmation appears before account data is cleared.
 
 Production submission requires the final Web Store extension ID’s exact OAuth callback to be registered in Supabase and the public production client ID to be supplied at build time.

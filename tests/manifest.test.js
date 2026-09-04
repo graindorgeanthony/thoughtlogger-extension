@@ -8,5 +8,6 @@ describe("Manifest V3 privacy boundary", () => {
     expect(manifest.permissions).toEqual(["activeTab", "scripting", "contextMenus", "identity", "storage", "alarms"]);
     expect(manifest.host_permissions).toEqual(["https://hjgbnndsobovniflcqcm.supabase.co/*"]);
     expect(manifest.content_scripts).toBeUndefined();
+    expect(Number(manifest.minimum_chrome_version)).toBeGreaterThanOrEqual(113);
   });
 });
