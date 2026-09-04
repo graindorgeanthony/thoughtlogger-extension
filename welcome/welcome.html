@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to ThoughtLogger</title>
+    <link rel="stylesheet" href="welcome.css">
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <img src="../icons/icon128.png" width="88" height="88" alt="ThoughtLogger">
+        <p class="eyebrow">THOUGHTLOGGER FOR CHROME</p>
+        <h1>Keep the thought.<br><em>Leave the friction.</em></h1>
+        <p class="lede">Capture what matters without breaking your flow. Connecting is always your choice—we never open sign-in automatically.</p>
+        <button id="connect">Connect ThoughtLogger</button>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+      <section class="permissions" aria-labelledby="permission-title">
+        <p class="eyebrow">WHY THESE PERMISSIONS</p><h2 id="permission-title">Small permissions, clear purpose.</h2>
+        <div class="grid">
+          <article><h3>Only the page you choose</h3><p><strong>activeTab + scripting</strong> open the composer and capture the visible viewport only after your click or shortcut.</p></article>
+          <article><h3>Capture where ideas happen</h3><p><strong>contextMenus</strong> adds actions for the current page and selected text. There is no persistent content script.</p></article>
+          <article><h3>Connect securely</h3><p><strong>identity</strong> completes ThoughtLogger’s OAuth flow. The extension contains no client secret.</p></article>
+          <article><h3>Never lose a capture</h3><p><strong>storage + alarms</strong> keep drafts and retry your account-isolated outbox after connectivity returns.</p></article>
+        </div>
+        <p class="promise">No browser history. No background page reading. No capture without a deliberate action.</p>
+      </section>
+    </main>
+    <script type="module" src="welcome.js"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "thoughtlogger-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "node scripts/build.mjs",
+    "package": "node scripts/build.mjs --zip",
+    "verify": "npm test && npm run package"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "fake-indexeddb": "^6.0.1",
+    "jsdom": "^26.1.0",
+    "vitest": "^3.2.4"
+  }
+}
